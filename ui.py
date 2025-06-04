@@ -71,6 +71,40 @@ def menu(screen, clock, font_big, font_medium):
                 elif quit_button.is_clicked(pos):
                     pygame.quit()
                     sys.exit()
+def skin_selection(screen, clock, font_big, img_truck, img_car_game):
+    truck_button = Button((140, 370, 200, 50), "Грузовик", pygame.font.SysFont("Arial", 28))
+    car_button = Button((140, 440, 200, 50), "Автомобиль", pygame.font.SysFont("Arial", 28))
 
+    while True:
+        screen.fill((10, 50, 10))
+        title_surf = font_big.render("Выберите скин", True, (255, 218, 185))
+        screen.blit(title_surf, title_surf.get_rect(center=(240, 150)))
+
+        truck_img_rect = img_truck.get_rect(center=(140 + 100, 280))
+        car_img_rect = img_car_game.get_rect(center=(140 + 300, 280))
+        screen.blit(img_truck, truck_img_rect)
+        screen.blit(img_car_game, car_img_rect)
+
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_pressed = pygame.mouse.get_pressed()
+
+        for button in [truck_button, car_button]:
+            button.update(mouse_pos, mouse_pressed)
+            button.draw(screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                pos = event.pos
+                if truck_button.is_clicked(pos):
+                    return img_truck
+                elif car_button.is_clicked(pos):
+                    return img_car_game
+                
+        pygame.display.flip()
+        clock.tick(60)
+        
         pygame.display.flip()
         clock.tick(60)
