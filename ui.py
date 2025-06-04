@@ -71,6 +71,10 @@ def menu(screen, clock, font_big, font_medium):
                 elif quit_button.is_clicked(pos):
                     pygame.quit()
                     sys.exit()
+                    
+        pygame.display.flip()
+        clock.tick(60)
+        
 def skin_selection(screen, clock, font_big, img_truck, img_car_game):
     truck_button = Button((140, 370, 200, 50), "Грузовик", pygame.font.SysFont("Arial", 28))
     car_button = Button((140, 440, 200, 50), "Автомобиль", pygame.font.SysFont("Arial", 28))
@@ -103,8 +107,5 @@ def skin_selection(screen, clock, font_big, img_truck, img_car_game):
                 elif car_button.is_clicked(pos):
                     return img_car_game
                 
-        pygame.display.flip()
-        clock.tick(60)
-        
         pygame.display.flip()
         clock.tick(60)
