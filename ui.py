@@ -39,15 +39,15 @@ class Button:
         return self.rect.collidepoint(pos)
 
 def menu(screen, clock, font_big, font_medium):
-    easy_button = Button((140, 230, 200, 50), "Легкий", font_medium)
-    medium_button = Button((140, 300, 200, 50), "Средний", font_medium)
-    hard_button = Button((140, 370, 200, 50), "Сложный", font_medium)
-    quit_button = Button((140, 440, 200, 50), "Выход", font_medium)
+    easy_button = Button((240 - 100, 320 - 90, 200, 50), "Легкий", font_medium)
+    medium_button = Button((240 - 100, 320 - 20, 200, 50), "Средний", font_medium)
+    hard_button = Button((240 - 100, 320 + 50, 200, 50), "Сложный", font_medium)
+    quit_button = Button((240 - 100, 320 + 120, 200, 50), "Выход", font_medium)
 
     while True:
         screen.fill(DARK_GREEN)
         title_surf = font_big.render("GAME", True, PEACH_BEIGE)
-        screen.blit(title_surf, title_surf.get_rect(center=(240, 150)))
+        screen.blit(title_surf, title_surf.get_rect(center=(240, 640 // 3 - 50)))
 
         mouse_pos = pygame.mouse.get_pos()
         mouse_pressed = pygame.mouse.get_pressed()
@@ -76,16 +76,16 @@ def menu(screen, clock, font_big, font_medium):
         clock.tick(60)
         
 def skin_selection(screen, clock, font_big, img_truck, img_car_game):
-    truck_button = Button((140, 370, 200, 50), "Грузовик", pygame.font.SysFont("Arial", 28))
-    car_button = Button((140, 440, 200, 50), "Автомобиль", pygame.font.SysFont("Arial", 28))
+    truck_button = Button((240 - 220, 320 + 50, 200, 50), "Грузовик", pygame.font.SysFont("Arial", 28))
+    car_button = Button((240 + 20, 320 + 50, 200, 50), "Автомобиль", pygame.font.SysFont("Arial", 28))
 
     while True:
-        screen.fill((10, 50, 10))
-        title_surf = font_big.render("Выберите скин", True, (255, 218, 185))
+        screen.fill((DARK_GREEN))
+        title_surf = font_big.render("Выберите скин", True, (PEACH_BEIGE))
         screen.blit(title_surf, title_surf.get_rect(center=(240, 150)))
 
-        truck_img_rect = img_truck.get_rect(center=(140 + 100, 280))
-        car_img_rect = img_car_game.get_rect(center=(140 + 300, 280))
+        truck_img_rect = img_truck.get_rect(center=(240 - 120, 320))
+        car_img_rect = img_car_game.get_rect(center=(240 + 120, 320))
         screen.blit(img_truck, truck_img_rect)
         screen.blit(img_car_game, car_img_rect)
 
