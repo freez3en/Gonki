@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 
 WIDTH, HEIGHT = 480, 640
 LANE_WIDTH = WIDTH // 4
@@ -67,6 +68,18 @@ def draw_road(surface):
             pygame.draw.line(surface, (255, 255, 255), (x, y), (x, y + dash_length), 4)
             y += dash_length + gap
 
+def collision_effect(sound_collision):
+    flash_time = 0.5
+    end_time = time.time() + flash_time
+    screen = pygame.display.get_surface()
+    clock = pygame.time.Clock()
+    while time.time() < end_time:
+        screen.fill((255, 0, 0))
+        pygame.display.flip()
+        clock.tick(60)
+    if sound_collision:
+        sound_collision.play()
+
 def game(level, player_image, img_car, img_obstacle, sound_collision, sound_nitro, sound_level_up):
     player = Player(player_image)
     player.speed = BASE_SPEED
@@ -107,6 +120,18 @@ def game(level, player_image, img_car, img_obstacle, sound_collision, sound_nitr
             obs.update()
             if obs.y > HEIGHT + obs.height:
                 obstacles.remove(obs)
+        
+        player_rect = pygame.Rect(player.x - player.width//2, player.y - player.height//2, player.width, player.height)
+        collision = False
+        for obs in obstacles:
+            obs_rect = pygame.Rect(obs.x - obs.width//2, obs.y - obs.height//2, obs.width, obs.height)
+            if player_rect.colliderect(obs_rect):
+                collision = True
+                break
+            
+        if collision:
+            collision_effect(sound_collision)
+            running = False
 
         player.draw(screen)
         for obs in obstacles:
