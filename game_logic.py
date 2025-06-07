@@ -79,6 +79,20 @@ def collision_effect(sound_collision):
         clock.tick(60)
     if sound_collision:
         sound_collision.play()
+        
+def load_record(level): 
+    try:
+        with open(f"record_level_{level}.txt", "r") as f:
+            return float(f.read())
+    except:
+        return 0.0
+
+def save_record(record, level): 
+    try:
+        with open(f"record_level_{level}.txt", "w") as f:
+            f.write(str(record))
+    except:
+        pass
 
 def game(level, player_image, img_car, img_obstacle, sound_collision, sound_nitro, sound_level_up):
     player = Player(player_image)
@@ -88,6 +102,8 @@ def game(level, player_image, img_car, img_obstacle, sound_collision, sound_nitr
     spawn_timer = 0
     spawn_interval = 1000 
     running = True
+    start_time = time.time()
+    record = load_record(level)
 
     clock = pygame.time.Clock()
     screen = pygame.display.get_surface()
@@ -136,10 +152,23 @@ def game(level, player_image, img_car, img_obstacle, sound_collision, sound_nitr
         player.draw(screen)
         for obs in obstacles:
             obs.draw(screen)
+        
+        survived = time.time() - start_time 
+        if survived > record:
+            record = survived
+
+        font_small = pygame.font.SysFont("Arial", 20)
+        time_surf = font_small.render(f"Время: {survived:.2f} с", True, (255, 218, 185))
+        record_surf = font_small.render(f"Рекорд: {record:.2f} с", True, (255, 218, 185))
+        screen.blit(time_surf, (10, 10))
+        screen.blit(record_surf, (10, 35)) 
 
         pygame.display.flip()
+    
+    save_record(record, level)
 
-    return True
+    action = game_over_screen(screen, clock, pygame.font.SysFont("Arial", 48), survived, record, level) 
+    return action == "retry"
 
 def level_up_screen(*args, **kwargs):
     pass
