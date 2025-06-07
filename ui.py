@@ -109,3 +109,56 @@ def skin_selection(screen, clock, font_big, img_truck, img_car_game):
                 
         pygame.display.flip()
         clock.tick(60)
+
+def level_up_screen(screen, clock, font_big, level, sound_level_up):
+    if sound_level_up:
+        sound_level_up.play()
+    wait_time = 3
+    start_time = pygame.time.get_ticks()
+
+    while pygame.time.get_ticks() - start_time < wait_time * 1000:
+        screen.fill(DARK_GREEN)
+        text = font_big.render(f"Уровень {level}!", True, PEACH_BEIGE)
+        screen.blit(text, text.get_rect(center=(240, 320)))
+        pygame.display.flip()
+        clock.tick(60)
+
+def game_over_screen(screen, clock, font_big, time_survived, record, level):
+    font_medium = pygame.font.SysFont("Arial", 28)
+    retry_button = Button((140, 370, 200, 50), "Повторить", font_medium)
+    menu_button = Button((140, 440, 200, 50), "В меню", font_medium)
+
+    while True:
+        screen.fill(DARK_GREEN)
+
+        over_surf = font_big.render("Игра окончена", True, PEACH_BEIGE)
+        time_surf = font_medium.render(f"Время: {time_survived:.2f} с", True, PEACH_BEIGE)
+        record_surf = font_medium.render(f"Рекорд: {record:.2f} с", True, PEACH_BEIGE)
+        level_surf = font_medium.render(f"Уровень: {level}", True, PEACH_BEIGE)
+
+        screen.blit(over_surf, over_surf.get_rect(center=(240, 150)))
+        screen.blit(time_surf, time_surf.get_rect(center=(240, 220)))
+        screen.blit(record_surf, record_surf.get_rect(center=(240, 260)))
+        screen.blit(level_surf, level_surf.get_rect(center=(240, 300)))
+
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_pressed = pygame.mouse.get_pressed()
+
+        retry_button.update(mouse_pos, mouse_pressed)
+        menu_button.update(mouse_pos, mouse_pressed)
+
+        retry_button.draw(screen)
+        menu_button.draw(screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if retry_button.is_clicked(event.pos):
+                    return "retry"
+                if menu_button.is_clicked(event.pos):
+                    return "menu"
+
+        pygame.display.flip()
+        clock.tick(60)
