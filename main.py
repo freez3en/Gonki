@@ -1,8 +1,8 @@
 import pygame
 import sys
 from assets import load_image, load_sound
-from ui import menu, skin_selection
-from game_logic import game, level_up_screen, trophy_screen, game_over_screen
+from ui import menu, skin_selection, level_up_screen, game_over_screen
+from game_logic import game,trophy_screen
 
 pygame.init()
 pygame.mixer.init()
@@ -28,8 +28,20 @@ def main():
     while True:
         start_level = menu(screen, clock, font_big, font_medium)
         player_image = skin_selection(screen, clock, font_big, img_truck, img_car_game)
-        game(start_level, player_image, img_car, img_obstacle, sound_collision, sound_nitro, sound_level_up)
-        break
+        current_level = start_level
+        while current_level <= 3:
+            level_up_screen(screen, clock, font_big, current_level, sound_level_up)
+            passed = game(start_level, player_image, img_car, img_obstacle, sound_collision, sound_nitro, sound_level_up)
+            if not passed:
+                action = game_over_screen(screen, clock, font_big, 0, 0, current_level)
+                if action == "retry":
+                    continue
+                elif action == "menu":
+                    break
+            else:
+                current_level += 1
+        else:
+            trophy_screen(screen, clock, font_big, font_medium)
 
 if __name__ == "__main__":
     main()
