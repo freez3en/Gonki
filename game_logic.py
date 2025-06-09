@@ -7,6 +7,9 @@ LANE_WIDTH = WIDTH // 4
 LANES_X = [LANE_WIDTH * i + LANE_WIDTH // 2 for i in range(4)]
 
 BASE_SPEED = 5
+NITRO_SPEED = 15
+NITRO_DURATION = 3
+NITRO_COOLDOWN = 5
 
 class Player:
     def __init__(self, image):
@@ -16,6 +19,9 @@ class Player:
         self.width = 50
         self.height = 90
         self.speed = BASE_SPEED
+        self.nitro_active = False
+        self.nitro_start_time = 0
+        self.nitro_last_used = -NITRO_COOLDOWN
         self.image = image
 
     def move_left(self):
@@ -34,10 +40,32 @@ class Player:
             self.x += 10
         else:
             self.x -= 10
+        
+        if self.nitro_active and time.time() - self.nitro_start_time > NITRO_DURATION:
+            self.nitro_active = False
+            self.speed = BASE_SPEED
 
     def draw(self, surface):
         rect = self.image.get_rect(center=(self.x, self.y))
         surface.blit(self.image, rect)
+        if self.nitro_active:
+            radius = max(self.width, self.height)
+            glow = pygame.Surface((radius*2, radius*2), pygame.SRCALPHA)
+            pygame.draw.circle(glow, (0, 150, 255, 100), (radius, radius), radius)
+            glow_rect = glow.get_rect(center=(self.x, self.y))
+            surface.blit(glow, glow_rect)
+    
+    def use_nitro(self, sound_nitro):
+        now = time.time()
+        if now - self.nitro_last_used >= NITRO_COOLDOWN:
+            self.nitro_active = True
+            self.nitro_start_time = now
+            self.nitro_last_used = now
+            self.speed = NITRO_SPEED
+            if sound_nitro:
+                sound_nitro.play()
+            return True
+        return False 
 
 class Obstacle:
     def __init__(self, lane, speed, kind, img_obstacle, img_car):
@@ -121,6 +149,8 @@ def game(level, player_image, img_car, img_obstacle, sound_collision, sound_nitr
                     player.move_left()
                 elif event.key == pygame.K_RIGHT:
                     player.move_right()
+                elif event.key == pygame.K_SPACE:
+                    player.use_nitro(sound_nitro)
 
         spawn_timer += dt
         if spawn_timer > spawn_interval:
@@ -169,9 +199,6 @@ def game(level, player_image, img_car, img_obstacle, sound_collision, sound_nitr
 
     action = game_over_screen(screen, clock, pygame.font.SysFont("Arial", 48), survived, record, level) 
     return action == "retry"
-
-def level_up_screen(*args, **kwargs):
-    pass
 
 def trophy_screen(*args, **kwargs):
     pass
