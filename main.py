@@ -1,8 +1,7 @@
 import pygame
-import sys
 from assets import load_image, load_sound
-from ui import menu, skin_selection, level_up_screen, game_over_screen
-from game_logic import game,trophy_screen
+from ui import menu, skin_selection, level_up_screen, game_over_screen, trophy_screen
+from game_logic import game
 
 pygame.init()
 pygame.mixer.init()
