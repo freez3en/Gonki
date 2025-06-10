@@ -1,6 +1,7 @@
 import pygame
 import random
 import time
+from ui import game_over_screen
 
 WIDTH, HEIGHT = 480, 640
 LANE_WIDTH = WIDTH // 4
@@ -199,9 +200,3 @@ def game(level, player_image, img_car, img_obstacle, sound_collision, sound_nitr
 
     action = game_over_screen(screen, clock, pygame.font.SysFont("Arial", 48), survived, record, level) 
     return action == "retry"
-
-def trophy_screen(*args, **kwargs):
-    pass
-
-def game_over_screen(*args, **kwargs):
-    return "menu"
