@@ -162,3 +162,26 @@ def game_over_screen(screen, clock, font_big, time_survived, record, level):
 
         pygame.display.flip()
         clock.tick(60)
+
+def trophy_screen(screen, clock, font_big, font_medium):
+    while True:
+        screen.fill(DARK_GREEN)
+        congrats_text = font_big.render("Поздравляем!", True, PEACH_BEIGE)
+        trophy_text = font_medium.render("Вы прошли все уровни!", True, PEACH_BEIGE)
+        quit_text = font_medium.render("Нажмите ESC для выхода", True, PEACH_BEIGE)
+
+        screen.blit(congrats_text, congrats_text.get_rect(center=(240, 200)))
+        screen.blit(trophy_text, trophy_text.get_rect(center=(240, 280)))
+        screen.blit(quit_text, quit_text.get_rect(center=(240, 560)))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+
+        pygame.display.flip()
+        clock.tick(60)
