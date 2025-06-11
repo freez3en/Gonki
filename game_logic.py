@@ -66,7 +66,19 @@ class Player:
             if sound_nitro:
                 sound_nitro.play()
             return True
-        return False 
+        return False
+    
+    def nitro_status(self):
+        now = time.time()
+        if self.nitro_active:
+            remaining = max(0, NITRO_DURATION - (now - self.nitro_start_time))
+            return ("active", remaining)
+        else:
+            cooldown_left = max(0, NITRO_COOLDOWN - (now - self.nitro_last_used))
+            if cooldown_left > 0:
+                return ("cooldown", cooldown_left)
+            else:
+                return ("ready", 0)
 
 class Obstacle:
     def __init__(self, lane, speed, kind, img_obstacle, img_car):
@@ -98,14 +110,6 @@ def draw_road(surface):
             y += dash_length + gap
 
 def collision_effect(sound_collision):
-    flash_time = 0.5
-    end_time = time.time() + flash_time
-    screen = pygame.display.get_surface()
-    clock = pygame.time.Clock()
-    while time.time() < end_time:
-        screen.fill((255, 0, 0))
-        pygame.display.flip()
-        clock.tick(60)
     if sound_collision:
         sound_collision.play()
         
@@ -192,7 +196,22 @@ def game(level, player_image, img_car, img_obstacle, sound_collision, sound_nitr
         time_surf = font_small.render(f"Время: {survived:.2f} с", True, (255, 218, 185))
         record_surf = font_small.render(f"Рекорд: {record:.2f} с", True, (255, 218, 185))
         screen.blit(time_surf, (10, 10))
-        screen.blit(record_surf, (10, 35)) 
+        screen.blit(record_surf, (10, 35))
+        
+        status, time_left = player.nitro_status()
+        if status == "active":
+            text = f"Нитро: Активно ({time_left:.1f}s)"
+            color = (0, 200, 255)
+        elif status == "cooldown":
+            text = f"Нитро: Перезарядка ({time_left:.1f}s)"
+            color = (200, 100, 0)
+        else:
+            text = "Нитро: Готово"
+            color = (0, 255, 0)
+        
+        nitro_surf = font_small.render(text, True, color)
+        nitro_rect = nitro_surf.get_rect(topright=(WIDTH - 10, 10))
+        screen.blit(nitro_surf, nitro_rect) 
 
         pygame.display.flip()
     
